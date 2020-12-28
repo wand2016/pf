@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "diagrams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "object",
+            "patternProperties": {
+              ".+": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              }
+            }
+          },
+          "csf": {
+            "type": "object",
+            "patternProperties": {
+              ".+": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "new": {
+                    "type": "boolean"
+                  },
+                  "obsolete": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          },
+          "actions": {
+            "type": "object",
+            "patternProperties": {
+              ".+": {
+                "type": "object",
+                "properties": {
+                  "for": {
+                    "type": [
+                      "string",
+                      "array"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "new": {
+                    "type": "boolean"
+                  },
+                  "obsolete": {
+                    "type": "boolean"
+                  },
+                  "result": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "for"
+                ]
+              }
+            }
+          },
+          "status": {
+            "type": "object",
+            "patternProperties": {
+              ".+": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "at",
+          "goal",
+          "csf",
+          "actions",
+          "status"
+        ]
+      }
+    }
+  },
+  "required": [
+    "version",
+    "diagrams"
+  ]
+}

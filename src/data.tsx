@@ -1,6 +1,8 @@
 import yaml from 'js-yaml';
 import axios from 'axios';
 import queryString from 'query-string';
+import Ajv from 'ajv';
+import schema from './schema.json';
 
 export type DocType = {
   version: string;
@@ -35,11 +37,27 @@ export const fetchData = async (): Promise<DocType> => {
   const response = await axios.get(
     dataUri instanceof Array ? dataUri[0] : dataUri
   );
-  const doc = response.data;
-  if (!doc) {
+
+  if (!response.data) {
     throw new Error('data is empty.');
   }
 
-  // TODO: まじめにtype guard作る
-  return yaml.safeLoad(doc) as DocType;
+  const doc = yaml.safeLoad(response.data);
+
+  const ajv = new Ajv();
+  const validate = ajv.compile(schema);
+
+  if (!validate(doc)) {
+    for (const err of validate.errors ?? []) {
+      console.error(err);
+    }
+    const errorMessage = (validate.errors ?? [])
+      .map((err) => {
+        return JSON.stringify(err, null, 2);
+      })
+      .join();
+    throw new Error(errorMessage);
+  }
+
+  return doc as DocType;
 };
